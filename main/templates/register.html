@@ -1,0 +1,69 @@
+{% extends 'index.html' %}
+
+{% block content %}
+            <div class="row my-5 justify-content-center text-center text-light">
+                <div class="col-12"> 
+                    <h1 class="fs-1"> Welcome to THE WALL </h1>
+                </div>
+            </div>
+            <div class="row justify-content-center text-light">
+                <div class="col-5 my-5">
+                    <h2 class"fs-2 my-3"> Register new user </h2>
+                    <form class="row g-3" action="/register" method="POST">
+                    {% csrf_token %}
+                        <div class="col-md-6">
+                            <label for="first_name" class="form-label">First name</label>
+                            <input type="text" name="first_name" class="form-control" id="newfirstname" value="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="last_name" class="form-label">Last name</label>
+                            <input type="text" name="last_name" class="form-control" id="newlastname" value="" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="genders" class="form-label">Gender</label>
+                            <select class="form-select" id="gender" name="gender" required>
+                                <option selected disabled value="">Choose...</option>
+                                <option value="1">Female</option>
+                                <option value="2">Male</option>
+                            </select>
+                        </div>
+                        <div class="col-md-8">
+                            <label for="email" class="form-label">E-mail</label>
+                            <input type="text" name="email" class="form-control" id="newfirstname" value="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pass" class="form-label">Password</label>
+                            <input type="password" name="password" class="form-control" id="pass" value="" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="pass" class="form-label">Confirm Password</label>
+                            <input type="password" name="password_confirm" class="form-control" id="pass" value="" required>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-1 my-5"></div>
+                <div class="col-5 my-5">
+                    <h2 class"fs-2 my-3 text-light"> Login user </h2>
+                    <form action="/login" method="POST">
+                    {% csrf_token %}
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">Email</label>
+                            <div class="col-sm-10">
+                                <input type="email" name="email" value=""class="form-control" id="inputEmail3">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                        <!-- div class card, images female/male disabled-->
+                            <label for="inputPassword3" class="col-sm-2 col-form-label">Password</label>
+                            <div class="col-sm-10">
+                                <input type="password" name="password" value=""class="form-control" id="inputPassword3">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-success">Login</button>
+                    </form>
+                </div>
+            </div>
+{% endblock %}

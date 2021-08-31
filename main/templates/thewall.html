@@ -1,0 +1,57 @@
+{% extends 'index.html' %}
+
+{% block content %}
+            <div class="row justify-content-center text-center">
+                <div class="col-12"> 
+                    <h1 class="fs-1 text-light"> THE WALL </h1>
+                </div>
+            </div>
+            <div class="row justify-content-center text-center">
+                <div class="col-8 my-5 text-light text-center">
+                    <form action="/publish" method="POST">
+                    {% csrf_token %}
+                        <div class="mb-3 text-start">
+                            <label for="text-area" class="form-label">What are you thinking {{user.first_name}} {{user.last_name}}</label>
+                            <textarea class="form-control" name="publish" value="" id="text-area" rows="3"></textarea>
+                        </div>
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-outline-success ">Do it!</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr>
+            <div class="row justify-content-center text-start">
+                <div class="col-12"> 
+                    <h1 class="fs-2 text-light"> Last Publish </h1>
+                </div>
+            </div>
+            <br>
+            <div class="row justify-content-center text-start" data-bs-spy="scroll" style="height: 30rem; overflow-y: scroll" id="actions">
+                <div class="col-8"> 
+                    {% for publish in publishers %}
+                    <div class="card mb-3" style="max-width: 100%">
+                        <div class="row g-0 align-items-center">
+                            <div class="col-md-3 p-3">
+                            <img src="{{publish.author.avatar}}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
+                            </div>
+                            <div class="col-md-9">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{publish.author.first_name}} {{publish.author.last_name}} </h5>
+                                    <p class="card-text">{{publish.publish}}</p>
+                                    <p class="card-text"><small class="text-muted">Last updated {{publish.updated_at}}</small></p>
+                                </div>
+                            </div>
+                            <div class="card-footer text-end">
+                                <a href="/like" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
+                                <a href="/dislike" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
+                                <a href="/comment" class="btn btn-outline-primary">Comment</a>
+                                <a href="/comment" class="btn btn-outline-success">Edit</a>
+                                <a href="/comment" class="btn btn-outline-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+{% endblock %}
