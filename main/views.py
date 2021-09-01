@@ -21,11 +21,7 @@ def register(request):
         first_name = request.POST['first_name']
         last_name = request.POST['last_name']
         email = request.POST['email']
-        gender = request.POST['gender']
-        if gender == 1:
-            avatar = 'https://www.terrainhopperusa.com/wp-content/uploads/2019/01/avatar-woman.png'
-        else:
-            avatar = 'https://cdn3.iconfinder.com/data/icons/avatars-round-flat/33/man5-512.png'
+        avatar = request.POST['gender']
         
         password = request.POST['password']
         password_confirm = request.POST['password_confirm']
@@ -92,10 +88,8 @@ def logout(request):
 
 @login_required
 def thewall(request):
-    
     users = Users.objects.all()
     publishers = Publishers.objects.all().order_by('-updated_at')
-    comments = Comments.objects.all()
     
     user = request.session['user']
     
@@ -103,7 +97,6 @@ def thewall(request):
         "user": user,
         "publishers": publishers,
         "users": users,
-        "comments": comments
     }
     return render(request, 'thewall.html', context)
 
@@ -121,67 +114,44 @@ def publish(request): # Ok
     usertemp.publishers.create(publish = publish)
     messages.success(request, f'Your message has ben published')
     return redirect('/thewall')
+
+@login_required
+def comment(request):
+    comment = request.POST['comment']
+    publishid = int(request.POST['publishid'])
+    userid= int(request.session['user']['id'])
     
+    Comments.objects.create(
+        comment = comment,
+        author_id = userid,
+        publish_id = publishid
+        )
+    messages.success(request, f'Your comment has ben published')
+    return redirect('/thewall')
 
-#@login_required
-#def id(request, id):
-    selectedshow = Shows.objects.get(id=id)
-    channel = Tv.objects.all()
-    show = Shows.objects.all()
+@login_required
+def edit(request, id):
+    selectedpublish = Publishers.objects.get(id=id)
     user = request.session['user']
-    context = {
-        "channel": channel,
-        "show": show,
-        "user": user,
-        "selectedshow": selectedshow
-    }
-    return render(request, 'tv_show.html', context)
+    publish = request.POST['publish']
+    
+    selectedpublish.publish = publish
+    selectedpublish.save()
+    messages.info(request, f'Your publish has been updated')
+    return redirect(f'/thewall')
 
-#@login_required
-#def edit(request, id):
-    selectedshow = Shows.objects.get(id=id)
-    channel = Tv.objects.all()
-    release_date = selectedshow.release_date.strftime('%Y-%m-%d')
+@login_required
+def deletepublish(request, id):
     user = request.session['user']
-    context = {
-        "selectedshow": selectedshow,
-        "channel": channel,
-        "user": user,
-        "release_date": release_date
-    }
-    return render(request, 'edit.html', context)
-
-#@login_required
-#def update(request, id):
-    selectedshow = Shows.objects.get(id=id)
-    errors = Shows.objects.basic_validator(request.POST)
-    channel = Tv.objects.all()
-    if len(errors) > 0:
-        for key, value in errors.items():
-            messages.error(request, value)
-        return redirect(f'../{selectedshow.id}/edit')
+    userid= request.session['user']['id']
+    tempuser = Users.objects.get(id=id)
+    selectedpublish = Publishers.objects.get(id=id)
+    
+    if selectedpublish.author.id == userid:
+        selectedpublish.delete()
+        messages.error(request, f'Your publish has been deleted')
+        return redirect("/thewall")
+    
     else:
-        showtitle = request.POST['title']
-        idnetwork = int(request.POST['network'])
-        date = request.POST['date'].strftime('%Y-%m-%d')
-        desc = request.POST['desc']
-        
-        selectedshow.title = showtitle
-        selectedshow.network_id = idnetwork
-        selectedshow.release_date = date
-        selectedshow.desc = desc
-        selectedshow.save()
-        messages.info(request, f'Your show {showtitle} has been updated')
-        return redirect(f'../{selectedshow.id}')
-
-#@login_required
-#def destroy(request, id):
-    selectedshow = Shows.objects.get(id=id)
-    temp = selectedshow.title
-    context = {
-        "temp": temp
-    }
-    messages.error(request, f'Your show {temp} has been deleted')
-    
-    selectedshow.delete()
-    return redirect("/shows", context)
+        messages.error(request, f'Your are not allowed to delete this')
+        return redirect("/thewall")

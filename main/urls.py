@@ -6,5 +6,8 @@ urlpatterns = [
     path('login', views.login),
     path('logout', views.logout),
     path('thewall', views.thewall),
-    path('publish', views.publish)
+    path('publish', views.publish),
+    path('comment', views.comment),
+    path('deletepublish/<id>', views.deletepublish),
+    path('edit/<id>', views.edit)
 ]

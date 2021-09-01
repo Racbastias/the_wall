@@ -27,13 +27,13 @@
                 </div>
             </div>
             <br>
-            <div class="row justify-content-center text-start" data-bs-spy="scroll" style="height: 30rem; overflow-y: scroll" id="actions">
-                <div class="col-8"> 
+            <div class="row justify-content-center text-start" data-bs-spy="scroll" style="height: 50rem; overflow-y: scroll" id="actions">
+                <div class="col-12"> 
                     {% for publish in publishers %}
                     <div class="card mb-3" style="max-width: 100%">
                         <div class="row g-0 align-items-center">
                             <div class="col-md-3 p-3">
-                            <img src="{{publish.author.avatar}}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
+                                <img src="{{publish.author.avatar}}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
                             </div>
                             <div class="col-md-9">
                                 <div class="card-body">
@@ -42,12 +42,59 @@
                                     <p class="card-text"><small class="text-muted">Last updated {{publish.updated_at}}</small></p>
                                 </div>
                             </div>
-                            <div class="card-footer text-end">
-                                <a href="/like" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
-                                <a href="/dislike" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
-                                <a href="/comment" class="btn btn-outline-primary">Comment</a>
-                                <a href="/comment" class="btn btn-outline-success">Edit</a>
-                                <a href="/comment" class="btn btn-outline-danger">Delete</a>
+                            <div class="card-footer text-end bg-light">
+                                <a href="#" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
+                                <a href="#" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
+                                <div class="d-inline">
+                                    <a href="#" data-href="/edit/{{publish.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                                </div>
+                                <a href="/deletepublish/{{publish.id}}" class="btn btn-outline-danger">Delete</a>
+                            </div>
+                            <div class="col-6"></div>
+                            <div class="card-footer text-start col-6 m-0 p-0">
+                                {% for comment in publish.comments.all %}
+                                <div class="row g-0 justify-content-end align-items-center">
+                                    <div class="col-md-3 p-3">
+                                        <img src="{{comment.author.avatar}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">{{comment.author.first_name}} {{comment.author.last_name}} </h5>
+                                            <p class="card-text">{{comment.comment}}</p>
+                                            <p class="card-text"><small class="text-muted">Last updated {{comment.updated_at}}</small></p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end bg-light">
+                                        <a href="#" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
+                                        <a href="#" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
+                                        <div class="d-inline">
+                                            <a href="#" data-href="/edit/{{comment.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                                        </div>
+                                        <a href="/deletecomment/{{comment.id}}" class="btn btn-outline-danger">Delete</a>
+                                    </div>
+                                    <hr>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="row g-0">
+                            <div class="col-6 bg-transparent"></div>
+                            <div class="card-body text-start col-6">
+                                <div class="row g-0 align-items-center justify-content-center">
+                                    <div class="col-md-3 p-3">
+                                        <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
+                                    </div>
+                                    <div class="col-md-9 align-items-center">
+                                        <form action="/comment" method="POST">
+                                        {% csrf_token %}
+                                            <div class="text-end col-10">
+                                                <input hidden name="publishid" value="{{publish.id}}">
+                                                <textarea class="form-control d-inline-flex" name="comment" value="" placeholder="What do you thing about it {{user.first_name}}" id="text-area" rows="1"></textarea>
+                                                <button type="submit" class="btn btn-outline-success d-inline-flex">Do it!</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

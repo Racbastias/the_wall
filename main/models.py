@@ -6,6 +6,8 @@ class UsersManager(models.Manager):
         errors = {}
         if len(postData['first_name'])< 2:
             errors["first_name"] = f'{["first_name"]} is not a name, try it again with 4 characters at least'
+        #if postData['email'] in Users.objects.all:
+            #errors["email"] = f'This email already exist'
         if len(postData['last_name'])< 2:
             errors["last_name"] = "'Last Name' should be at least 4 characters"
         if len(postData['password']) < 8:
@@ -46,7 +48,8 @@ class Publishers(models.Model):
 class Comments(models.Model):
     comment = models.TextField()
     author = models.ForeignKey(Users, related_name="comments", on_delete=models.CASCADE)
-    publish = models.ForeignKey(Publishers, related_name="commentss", on_delete=models.CASCADE)
+    publish = models.ForeignKey(Publishers, related_name="comments", on_delete=models.CASCADE)
+    
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
