@@ -16,30 +16,46 @@
     </head>
 
     <body class="p-0 m-0" style="background-image: url(https://fondosmil.com/fondo/27527.jpg); background-size:cover; background-repeat:repeat; opacity:0.8">
-        <div class="modal fade" id="confirm-edit" tabindex="-1" aria-labelledby="Editpublish" aria-hidden="true">
+        <!-- modals -->
+        <div class="modal fade" id="confirm-edit" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="Editpublish">Edit</h5>
+                        <h5 class="modal-title" id="ModalLabel">Editar</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form action="/publish" method="POST">
-                            {% csrf_token %}
-                                <div class="mb-3 text-start">
-                                    <label for="text-area" class="form-label">What are you thinking {{user.first_name}} {{user.last_name}}</label>
-                                    <textarea class="form-control" name="publish" value="{{publish.publish}}" id="text-area" rows="3"></textarea>
-                                </div>
-                                <div class="text-end">
-                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
-                                    <a class="btn btn-outline-success btn-ok">Do it!</a>
-                                </div>
-                            </form>
+                            <div class="mb-3 text-start">
+                            <label for="text-area" class="form-label">What are you thinking {{user.first_name}}</label>
+                            <textarea class="form-control" name="newpublish" value="" placeholder="{{user.publishers.publish}}" id="text-area" rows="3"></textarea>
                         </div>
-                    </div>a
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <a class="btn btn-outline-success btn-ok">Edit this</a>
+                    </div>
                 </div>
             </div>
         </div>
+        <div class="modal fade" id="confirm-delete" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Eliminar</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p> Are you sure you want to delete this </p>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                        <a class="btn btn-outline-danger btn-ok">Delete this</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+
         <nav class="navbar navbar-light bg-transparent">
             <div class="container-fluid">
                 {%if user.avatar == None %}

@@ -34,6 +34,7 @@ def register(request):
             return redirect('/register')
         
         # si llegamos hasta acá, estamos seguros que ambas coinciden
+        #import pdb; pdb.set_trace()
         user = Users.objects.create(
             first_name = first_name,
             last_name = last_name,
@@ -90,7 +91,6 @@ def logout(request):
 def thewall(request):
     users = Users.objects.all()
     publishers = Publishers.objects.all().order_by('-updated_at')
-    
     user = request.session['user']
     
     context = {
@@ -129,27 +129,90 @@ def comment(request):
     messages.success(request, f'Your comment has ben published')
     return redirect('/thewall')
 
-@login_required
-def edit(request, id):
-    selectedpublish = Publishers.objects.get(id=id)
-    user = request.session['user']
-    publish = request.POST['publish']
+#@login_required
+#def follow(request, id):
+    publishid = int(request.POST['publishid'])
+    userid= int(request.session['user']['id'])
     
-    selectedpublish.publish = publish
-    selectedpublish.save()
-    messages.info(request, f'Your publish has been updated')
-    return redirect(f'/thewall')
+    Comments.objects.create(
+        comment = comment,
+        author_id = userid,
+        publish_id = publishid
+        )
+    messages.success(request, f'Your comment has ben published')
+    return redirect('/thewall')
+
+#@login_required
+#def unfollow(request, id):
+    publishid = int(request.POST['publishid'])
+    userid= int(request.session['user']['id'])
+    
+    Comments.objects.create(
+        comment = comment,
+        author_id = userid,
+        publish_id = publishid
+        )
+    messages.success(request, f'Your comment has ben published')
+    return redirect('/thewall')
+
+
+@login_required
+def editpublish(request, id):
+    selectedpublish = Publishers.objects.get(id=id)
+    userid = request.session['user']['id']
+    newpublish = request.POST['newpublish']
+    context = {
+        "selectedpublish": selectedpublish
+    }
+    if selectedpublish.author.id == userid:
+        selectedpublish.publish = newpublish
+        selectedpublish.save()
+        messages.info(request, f'Your publish has been updated')
+        return redirect(f'/thewall')
+    
+    else:
+        messages.error(request, f'Your are not allowed to edit this')
+        return redirect("/thewall")
+
+@login_required
+def editcomment(request, id):
+    selectedcomment = Comments.objects.get(id=id)
+    oldcomment = selectedcomment.comment
+    userid = request.session['user']['id']
+    newcomment = request.POST['comment']
+    
+    if selectedcomment.author.id == userid:
+        selectedcomment.comment = newcomment
+        selectedcomment.save()
+        messages.info(request, f'Your comment has been updated')
+        return redirect(f'/thewall')
+    
+    else:
+        messages.error(request, f'Your are not allowed to edit this')
+        return redirect("/thewall")
 
 @login_required
 def deletepublish(request, id):
-    user = request.session['user']
     userid= request.session['user']['id']
-    tempuser = Users.objects.get(id=id)
     selectedpublish = Publishers.objects.get(id=id)
     
     if selectedpublish.author.id == userid:
         selectedpublish.delete()
         messages.error(request, f'Your publish has been deleted')
+        return redirect("/thewall")
+    
+    else:
+        messages.error(request, f'Your are not allowed to delete this')
+        return redirect("/thewall")
+
+@login_required
+def deletecomment(request, id):
+    userid= request.session['user']['id']
+    selectedcomment = Comments.objects.get(id=id)
+    
+    if selectedcomment.author.id == userid:
+        selectedcomment.delete()
+        messages.error(request, f'Your comment has been deleted')
         return redirect("/thewall")
     
     else:

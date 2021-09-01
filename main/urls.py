@@ -9,5 +9,9 @@ urlpatterns = [
     path('publish', views.publish),
     path('comment', views.comment),
     path('deletepublish/<id>', views.deletepublish),
-    path('edit/<id>', views.edit)
+    path('deletecomment/<id>', views.deletecomment),
+    path('editpublish/<id>', views.editpublish),
+    path('editcomment/<id>', views.editcomment),
+    #path('follow/<id>', views.follow),
+    #path('unfollow/<id>', views.unfollow),
 ]

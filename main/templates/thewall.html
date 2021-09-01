@@ -11,7 +11,7 @@
                     <form action="/publish" method="POST">
                     {% csrf_token %}
                         <div class="mb-3 text-start">
-                            <label for="text-area" class="form-label">What are you thinking {{user.first_name}} {{user.last_name}}</label>
+                            <label for="text-area" class="form-label">What are you thinking {{user.first_name}}</label>
                             <textarea class="form-control" name="publish" value="" id="text-area" rows="3"></textarea>
                         </div>
                         <div class="text-end">
@@ -43,12 +43,8 @@
                                 </div>
                             </div>
                             <div class="card-footer text-end bg-light">
-                                <a href="#" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
-                                <a href="#" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
-                                <div class="d-inline">
-                                    <a href="#" data-href="/edit/{{publish.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
-                                </div>
-                                <a href="/deletepublish/{{publish.id}}" class="btn btn-outline-danger">Delete</a>
+                                <a href="#" data-href="/editpublish/{{publish.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                                <a href="#" data-href="/deletepublish/{{publish.id}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
                             </div>
                             <div class="col-6"></div>
                             <div class="card-footer text-start col-6 m-0 p-0">
@@ -65,12 +61,8 @@
                                         </div>
                                     </div>
                                     <div class="card-footer text-end bg-light">
-                                        <a href="#" class="btn btn-outline-success"><i class="far fa-thumbs-up"></i></a>
-                                        <a href="#" class="btn btn-outline-danger"><i class="far fa-thumbs-down"></i></a>
-                                        <div class="d-inline">
-                                            <a href="#" data-href="/edit/{{comment.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
-                                        </div>
-                                        <a href="/deletecomment/{{comment.id}}" class="btn btn-outline-danger">Delete</a>
+                                        <a href="#" data-href="/editcomment/{{comment.id}}" title="Edit" class="lnk-del btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                                        <a href="#" data-href="/deletecomment/{{comment.id}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
                                     </div>
                                     <hr>
                                 </div>

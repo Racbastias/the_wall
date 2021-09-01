@@ -4,10 +4,11 @@ from django.db import IntegrityError
 class UsersManager(models.Manager):
     def basic_validator(self, postData):
         errors = {}
+        emails = Users.objects.all().values('email')
         if len(postData['first_name'])< 2:
             errors["first_name"] = f'{["first_name"]} is not a name, try it again with 4 characters at least'
-        #if postData['email'] in Users.objects.all:
-            #errors["email"] = f'This email already exist'
+        if postData['email'] in emails:
+            errors["email"] = f'This email already exist'
         if len(postData['last_name'])< 2:
             errors["last_name"] = "'Last Name' should be at least 4 characters"
         if len(postData['password']) < 8:
@@ -38,9 +39,9 @@ class Users(models.Model):
 class Publishers(models.Model):
     publish = models.TextField()
     author = models.ForeignKey(Users, related_name="publishers", on_delete=models.CASCADE)
+    # comments
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    # commentss
     
     def __repr__(self) -> str:
         return f'[{self.id}] {self.author.first_name}'
