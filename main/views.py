@@ -35,13 +35,18 @@ def register(request):
         
         # si llegamos hasta acá, estamos seguros que ambas coinciden
         #import pdb; pdb.set_trace()
-        user = Users.objects.create(
-            first_name = first_name,
-            last_name = last_name,
-            email = email,
-            password = (bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()),
-            avatar = avatar
-        )
+        try: 
+            user = Users.objects.create(
+                first_name = first_name,
+                last_name = last_name,
+                email = email,
+                password = (bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()),
+                avatar = avatar
+            )
+        except IntegrityError:
+            messages.error(request, 'This Email already exist')
+            return redirect('/register')
+        
         request.session['user'] ={
             'id': user.id,
             'first_name': user.first_name,
@@ -160,10 +165,8 @@ def comment(request):
 def editpublish(request, id):
     selectedpublish = Publishers.objects.get(id=id)
     userid = request.session['user']['id']
-    newpublish = request.POST['newpublish']
-    context = {
-        "selectedpublish": selectedpublish
-    }
+    newpublish = request.POST['publish']
+
     if selectedpublish.author.id == userid:
         selectedpublish.publish = newpublish
         selectedpublish.save()
@@ -177,7 +180,6 @@ def editpublish(request, id):
 @login_required
 def editcomment(request, id):
     selectedcomment = Comments.objects.get(id=id)
-    oldcomment = selectedcomment.comment
     userid = request.session['user']['id']
     newcomment = request.POST['comment']
     
