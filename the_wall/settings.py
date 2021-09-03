@@ -28,10 +28,9 @@ SECRET_KEY = 'django-insecure-k5r=b728w3eokiq1q5bxo6#p5!+qf(w#lr4*z3t2ee!d0#%3q)
 DEBUG = True
 
 ALLOWED_HOSTS = []
-STATIC_ROOT = os.path.join(BASE_DIR, "static/")
-
 if env == 'cloud':
     ALLOWED_HOSTS = ['143.198.136.118']
+STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 # Application definition
 
 INSTALLED_APPS = [
