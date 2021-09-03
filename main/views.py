@@ -1,6 +1,7 @@
 from main.decorators import login_required
 import bcrypt
 from django.shortcuts import render, redirect
+from django.http import JsonResponse
 from main.models import Users, Publishers, Comments
 from django.contrib import messages
 from django.db import IntegrityError
@@ -114,10 +115,18 @@ def publish(request): # Ok
         "user": user
     }
     userid= request.session['user']['id']
-    #import pdb; pdb.set_trace()
     usertemp = Users.objects.get(id=userid)
-    usertemp.publishers.create(publish = publish)
+    newpublish = usertemp.publishers.create(publish = publish)
+    
     messages.success(request, f'Your message has ben published')
+
+    #return JsonResponse({
+    #    'id': newpublish.id,
+    #    'publish': newpublish.publish,
+    #    'author': newpublish.author,
+    #    'avatar': newpublish.author.avatar,
+    #    'created_at': newpublish.created_at,
+    #})
     return redirect('/thewall')
 
 @login_required

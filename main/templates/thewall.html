@@ -9,11 +9,11 @@
             <!-- post create form-->
             <div class="row justify-content-center text-center">
                 <div class="col-8 my-5 text-light text-center">
-                    <form action="/publish" method="POST">
+                    <form action="/publish" method="POST" id="form_publish">
                     {% csrf_token %}
                         <div class="mb-3 text-start">
                             <label for="text-area" class="form-label">What are you thinking {{user.first_name}}</label>
-                            <textarea class="form-control" name="publish" value="" id="text-area" rows="3"></textarea>
+                            <textarea class="form-control" name="publish" value="" id="publish" rows="3"></textarea>
                         </div>
                         <div class="text-end">
                             <button type="submit" class="btn btn-outline-success ">Do it!</button>
@@ -29,7 +29,7 @@
             </div>
             <br>
             <div class="row justify-content-center text-start" data-bs-spy="scroll" style="height: 50rem; overflow-y: scroll" id="actions">
-                <div class="col-12"> 
+                <div class="col-12" id="publishers"> 
                     <!-- publishers -->
                     {% for publish in publishers %}
                     <div class="card mb-3" style="max-width: 100%">
