@@ -1,4 +1,5 @@
 from main.decorators import login_required
+from datetime import timedelta
 import bcrypt
 from django.shortcuts import render, redirect
 from django.http import JsonResponse
@@ -103,6 +104,7 @@ def thewall(request):
         "user": user,
         "publishers": publishers,
         "users": users,
+        
     }
     return render(request, 'thewall.html', context)
 
@@ -117,17 +119,17 @@ def publish(request): # Ok
     userid= request.session['user']['id']
     usertemp = Users.objects.get(id=userid)
     newpublish = usertemp.publishers.create(publish = publish)
+    realdate = newpublish.updated_at - timedelta(hours=4)
     
-    messages.success(request, f'Your message has ben published')
-
-    #return JsonResponse({
-    #    'id': newpublish.id,
-    #    'publish': newpublish.publish,
-    #    'author': newpublish.author,
-    #    'avatar': newpublish.author.avatar,
-    #    'created_at': newpublish.created_at,
-    #})
-    return redirect('/thewall')
+    #messages.success(request, f'Your message has ben published')
+    return JsonResponse({
+        'id': newpublish.id,
+        'publish': newpublish.publish,
+        'author_name': newpublish.author.first_name + ' ' + newpublish.author.last_name,
+        'avatar': newpublish.author.avatar,
+        'updated_at': realdate.strftime('%e de %B de %Y a las %R')
+    })
+    #return redirect('/thewall')
 
 @login_required
 def comment(request):
