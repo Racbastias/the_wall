@@ -137,12 +137,17 @@ def comment(request):
     comment = request.POST['comment']
     publishid = int(request.POST['publishid'])
     userid= int(request.session['user']['id'])
+    usertemp = Users.objects.get(id=userid)
+    newcomment = Comments.objects.create(comment = comment, author_id=userid, publish_id = publishid)
+    realdate = newcomment.updated_at - timedelta(hours=4)
     
-    Comments.objects.create(
-        comment = comment,
-        author_id = userid,
-        publish_id = publishid
-        )
+    #return JsonResponse({
+        #'id': newcomment.id,
+        #'comment': newcomment.comment,
+        #'author_name': newcomment.author.first_name + ' ' + newcomment.author.last_name,
+        #'avatar': newcomment.author.avatar,
+        #'updated_at': realdate.strftime('%e de %B de %Y a las %R')
+    #})
     messages.success(request, f'Your comment has ben published')
     return redirect('/thewall')
 
