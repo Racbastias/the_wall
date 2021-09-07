@@ -136,6 +136,53 @@
             })
         </script>
         <script>
+            function handle_form_comment() {
+                $('.form_comment').on('submit', function(event){
+                    event.preventDefault();
+                    const comment_field = $(this).find('.comment');
+                    const publishid_field = $(this).find('.publishid');
+                    console.log(comment_field, publishid_field);
+                    $.ajax({
+                        method: 'POST',
+                        url: '/comment',
+                        data: {
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                            comment: comment_field.val(),
+                            publishid: publishid_field.val()
+                        },
+                        success: function(data){
+                            // se deja el formulario en blanco
+                            comment_field.val('')
+                            // se agrega el post
+                            $('#comments-'+publishid_field.val()).append(`                            
+                                <div class="row g-0 justify-content-end align-items-center">
+                                    <div class="col-md-3 p-3">
+                                        <img src="${data.avatar}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
+                                    </div>
+                                    <div class="col-md-9">
+                                        <div class="card-body">
+                                            <h5 class="card-title">${data.author_name}</h5>
+                                            <p class="card-text" id="comment-${data.id}">${data.comment}</p>
+                                            <p class="card-text"><small class="text-muted">Last updated ${data.updated_at}</small></p>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer text-end bg-light">
+                                        <a href="#" data-id="${data.id}" data-action="/editcomment/${data.id}" title="Edit" class="lnk-edit btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
+                                        <a href="#" data-href="/deletecomment/${data.id}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                                    </div>
+                                    <hr>
+                                </div>
+                            `)
+                        },
+                        error: function(error){
+                            console.log('error', error)
+                        }
+                    })
+                })
+            }
+            handle_form_comment();
+        </script>
+        <script>
             $('#form_publish').on('submit', function(event){
                 event.preventDefault()
                 $.ajax({
@@ -151,68 +198,51 @@
                         console.log(data)
                         // se agrega el post
                         $('#publishers').prepend(`
-                        <div class="card mb-3" style="max-width: 100%">
-                            <div class="row g-0 align-items-center">
-                                <div class="col-md-3 p-3">
-                                    <img src="${data.avatar}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${data.author_name}</h5>
-                                        <p class="card-text" id="publish-${data.id}">${data.publish}</p>
-                                        <p class="card-text"><small class="text-muted">Last updated ${data.updated_at}</small></p>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-end bg-light">
-                                    <a href="#" data-id="${data.id}" data-action="/editpublish/${data.id}" title="Edit" class="lnk-editp btn btn-outline-success" data-title="editp" data-bs-toggle="modal" data-bs-target="#confirm-publish">Edit</a>
-                                    <a href="#" data-href="/deletepublish/${data.id}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
-                                </div>
-                                <div class="col-6"></div>
-                                
-                                <div class="card-footer text-start col-6 m-0 p-0" id="comments-{{publish.id}}">
-                                {% for comment in publish.comments.all %}
-                                <div class="row g-0 justify-content-end align-items-center">
+                            <div class="card mb-3 bg-light" style="max-width: 100%">
+                                <div class="row g-0 align-items-center bg-light">
                                     <div class="col-md-3 p-3">
-                                        <img src="{{comment.author.avatar}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
+                                        <img src="${data.avatar}" class="img-fluid rounded-start" alt="..." style="width:10rem; height:10rem;">
                                     </div>
                                     <div class="col-md-9">
                                         <div class="card-body">
-                                            <h5 class="card-title">{{comment.author.first_name}} {{comment.author.last_name}} </h5>
-                                            <p class="card-text" id="comment-{{comment.id}}">{{comment.comment}}</p>
-                                            <p class="card-text"><small class="text-muted">Last updated {{comment.updated_at}}</small></p>
+                                            <h5 class="card-title">${data.author_name}</h5>
+                                            <p class="card-text" id="publish-${data.id}">${data.publish}</p>
+                                            <p class="card-text"><small class="text-muted">Last updated ${data.updated_at}</small></p>
                                         </div>
                                     </div>
                                     <div class="card-footer text-end bg-light">
-                                        <a href="#" data-id="{{comment.id}}" data-action="/editcomment/{{comment.id}}" title="Edit" class="lnk-edit btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
-                                        <a href="#" data-href="/deletecomment/{{comment.id}}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
+                                        <a href="#" data-id="${data.id}" data-action="/editpublish/${data.id}" title="Edit" class="lnk-editp btn btn-outline-success" data-title="editp" data-bs-toggle="modal" data-bs-target="#confirm-publish">Edit</a>
+                                        <a href="#" data-href="/deletepublish/${data.id}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
                                     </div>
-                                    <hr>
+                                    <div class="col-6"></div>
+                                    
+                                    <div class="card-footer text-start col-6 m-0 p-0" id="comments-${data.id}">
+                                    </div>
                                 </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                        <div class="row g-0">
-                            <div class="col-6 bg-transparent"></div>
-                            <!-- new comment -->
-                            <div class="card-body text-start col-6">
-                                <div class="row g-0 align-items-center justify-content-center">
-                                    <div class="col-md-3 p-3">
-                                        <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
-                                    </div>
-                                    <div class="col-md-9 align-items-center">
-                                        <form action="/comment" method="POST" id="form_comment">
-                                        {% csrf_token %}
-                                            <div class="text-end col-12">
-                                                <input hidden name="publishid" id="publishid" value="${data.id}">
-                                                <textarea class="form-control d-inline-flex" id="comment" name="comment" value="" placeholder="What do you thing about it {{user.first_name}}" id="text-area" rows="1"></textarea>
-                                                <button type="submit" class="btn btn-outline-success d-inline-flex">Do it!</button>
+                                <div class="row g-0">
+                                    <div class="col-6 bg-transparent"></div>
+                                    <!-- new comment -->
+                                    <div class="card-body text-start col-6">
+                                        <div class="row g-0 align-items-center justify-content-center">
+                                            <div class="col-md-3 p-3">
+                                                <img src="{{user.avatar}}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
                                             </div>
-                                        </form>
+                                            <div class="col-md-9 align-items-center">
+                                                <form action="/comment" method="POST" class="form_comment">
+                                                {% csrf_token %}
+                                                    <div class="text-end col-12">
+                                                        <input hidden name="publishid" class="publishid" value="${data.id}">
+                                                        <textarea class="form-control d-inline-flex comment"  name="comment" value="" placeholder="What do you thing about it {{user.first_name}}" id="text-area" rows="1"></textarea>
+                                                        <button type="submit" class="btn btn-outline-success d-inline-flex">Do it!</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         `)
+                        handle_form_comment();
                     },
                     error: function(error){
                         console.log('error', error)
@@ -220,48 +250,7 @@
                 })
             })
         </script>
-        <!--<script>
-            $('#form_comment').on('submit', function(event){
-                event.preventDefault()
-                $.ajax({
-                    method: 'POST',
-                    url: '/comment',
-                    data: {
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                        comment: $('#comment').val(),
-                        publishid: $('#publishid').val()
-                    },
-                    success: function(data){
-                        // se deja el formulario en blanco
-                        $('#comment').val('')
-                        console.log(data)
-                        // se agrega el post
-                        $('#comments-{{publish.id}}').prepend(`                            
-                            <div class="row g-0 justify-content-end align-items-center">
-                                <div class="col-md-3 p-3">
-                                    <img src="${data.avatar}" class="img-fluid rounded-start" alt="..." style="width:5rem; height:5rem;">
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="card-body">
-                                        <h5 class="card-title">${data.author_name}</h5>
-                                        <p class="card-text" id="comment-${data.id}">${data.comment}</p>
-                                        <p class="card-text"><small class="text-muted">Last updated ${data.updated_at}</small></p>
-                                    </div>
-                                </div>
-                                <div class="card-footer text-end bg-light">
-                                    <a href="#" data-id="${data.id}" data-action="/editcomment/${data.id}" title="Edit" class="lnk-edit btn btn-outline-success" data-title="edit" data-bs-toggle="modal" data-bs-target="#confirm-edit">Edit</a>
-                                    <a href="#" data-href="/deletecomment/${data.id}" title="Delete" class="lnk-del btn btn-outline-danger" data-title="delete" data-bs-toggle="modal" data-bs-target="#confirm-delete">Delete</a>
-                                </div>
-                                <hr>
-                            </div>
-                        `)
-                    },
-                    error: function(error){
-                        console.log('error', error)
-                    }
-                })
-            })
-        </script>-->
+        
 
     </body>
 </html>
